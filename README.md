@@ -1,5 +1,4 @@
 # ResBlaster
-===
 
 ![PYPI](https://img.shields.io/pypi/v/ResBlaster)
 
