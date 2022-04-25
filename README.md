@@ -7,7 +7,8 @@ pip3 install ResBlaster==0.1.4
 ## Dependency
 - BLAST+ >2.7.0
 - cvmblaster (v0.1.3)
-** you should add blast in your PATH **
+
+**you should add blast in your PATH**
 
 
 ## Blast installation
@@ -16,7 +17,10 @@ waiting...
 
 ### Linux/Mac
 The easyest way to install blast is:
+
+```
 conda install -c bioconda blast
+```
 
 ## Usage
 ```
