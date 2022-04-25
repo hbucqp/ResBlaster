@@ -3,7 +3,7 @@
 ![PYPI](https://img.shields.io/pypi/v/ResBlaster)
 
 ## Installation
-pip3 install ResBlaster==0.1.4
+pip3 install ResBlaster==0.1.5
 
 ## Dependency
 - BLAST+ >2.7.0
@@ -33,7 +33,7 @@ optional arguments:
   -h, --help      show this help message and exit
   -i I            <input_path>: genome assembly path
   -o O            <output_directory>: output path
-  -db DB          <database>: resfinder or othersoutfile
+  -db DB          <database>: resfinder or others
   -minid MINID    <minimum threshold of identity>
   -mincov MINCOV  <minimum threshold of coverage>
   -list           <show database>
