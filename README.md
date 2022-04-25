@@ -1,5 +1,7 @@
 # ResBlaster
+===
 
+![PYPI](https://img.shields.io/pypi/v/ResBlaster)
 
 ## Installation
 pip3 install ResBlaster==0.1.4
