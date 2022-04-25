@@ -37,6 +37,7 @@ optional arguments:
   -minid MINID    <minimum threshold of identity>
   -mincov MINCOV  <minimum threshold of coverage>
   -list           <show database>
+  -init           <initialize the reference database>
   -t T            <number of threads>: threads
   -v, --version   Display version
   ```
