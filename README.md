@@ -3,11 +3,11 @@
 ![PYPI](https://img.shields.io/pypi/v/ResBlaster)
 
 ## Installation
-pip3 install ResBlaster==0.1.5
+pip3 install ResBlaster==0.1.9
 
 ## Dependency
 - BLAST+ >2.7.0
-- cvmblaster (v0.1.3)
+- cvmblaster (v0.1.5)
 
 **you should add blast in your PATH**
 

@@ -13,12 +13,14 @@ def args_parse():
     parser.add_argument("-i", help="<input_path>: genome assembly path")
     parser.add_argument("-o", help="<output_directory>: output path")
     parser.add_argument('-db', default='resfinder',
-                        help='<database>: resfinder or othersoutfile')
+                        help='<database>: resfinder or others')
     parser.add_argument('-minid', default=90,
                         help="<minimum threshold of identity>")
     parser.add_argument('-mincov', default=60,
                         help="<minimum threshold of coverage>")
     parser.add_argument('-list', action='store_true', help='<show database>')
+    parser.add_argument('-init', action='store_true',
+                        help='<initialize the reference database>')
     parser.add_argument('-t', default=8, help='<number of threads>: threads')
     # parser.add_argument("-p", default=True, help="True of False to process something",
     #                     type=lambda x: bool(strtobool(str(x).lower())))
@@ -79,10 +81,23 @@ def show_db_list():
             print(file_base + '\t' + str(num_seqs))
 
 
+def initialize_db():
+    database_path = os.path.join(
+        os.path.dirname(__file__), f'db')
+    for file in os.listdir(database_path):
+        if file.endswith('.fsa'):
+            file_path = os.path.join(database_path, file)
+            file_base = os.path.splitext(file)[0]
+            out_path = os.path.join(database_path, file_base)
+            Blaster.makeblastdb(file_path, out_path)
+
+
 def main():
     args = args_parse()
     if args.list:
         show_db_list()
+    if args.init:
+        initialize_db()
     else:
         # threads
         threads = args.t
