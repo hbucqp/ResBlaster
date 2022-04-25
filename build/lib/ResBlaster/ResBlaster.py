@@ -1,14 +1,9 @@
 import os
 import sys
 import argparse
+import subprocess
 from Bio import SeqIO
 from cvmblaster.blaster import Blaster
-
-
-input = "/Users/cuiqingpo/Downloads/test_genome"
-my_file = "/Users/cuiqingpo/Downloads/zdq_ecoli/jsE212.fa"
-# db = "/Users/cuiqingpo/Downloads/blast_db/resfinder"
-output = "./"
 
 
 def args_parse():
@@ -18,7 +13,13 @@ def args_parse():
     parser.add_argument("-i", help="<input_path>: genome assembly path")
     parser.add_argument("-o", help="<output_directory>: output path")
     parser.add_argument('-db', default='resfinder',
-                        help='database <resfinder or others>')
+                        help='<database>: resfinder or othersoutfile')
+    parser.add_argument('-minid', default=90,
+                        help="<minimum threshold of identity>")
+    parser.add_argument('-mincov', default=60,
+                        help="<minimum threshold of coverage>")
+    parser.add_argument('-list', action='store_true', help='<show database>')
+    parser.add_argument('-t', default=8, help='<number of threads>: threads')
     # parser.add_argument("-p", default=True, help="True of False to process something",
     #                     type=lambda x: bool(strtobool(str(x).lower())))
     parser.add_argument('-v', '--version', action='version',
@@ -49,10 +50,13 @@ def is_fasta(file):
     """
     chcek if the input file is fasta format
     """
-    with open(file, "r") as handle:
-        fasta = SeqIO.parse(handle, "fasta")
-        # False when `fasta` is empty, i.e. wasn't a FASTA file
-        return any(fasta)
+    try:
+        with open(file, "r") as handle:
+            fasta = SeqIO.parse(handle, "fasta")
+            # False when `fasta` is empty, i.e. wasn't a FASTA file
+            return any(fasta)
+    except:
+        return False
 
 
 def join(f):
@@ -62,31 +66,60 @@ def join(f):
     return os.path.join(os.path.dirname(__file__), f)
 
 
+def show_db_list():
+    print('Datbase' + '\t' + 'Num_of_Sequence')
+    db_path = os.path.join(os.path.dirname(__file__), 'db')
+    for file in os.listdir(db_path):
+        file_path = os.path.join(db_path, file)
+        if file_path.endswith('.fsa'):
+            fasta_file = os.path.basename(file_path)
+            file_base = os.path.splitext(fasta_file)[0]
+            num_seqs = len(
+                [1 for line in open(file_path) if line.startswith(">")])
+            print(file_base + '\t' + str(num_seqs))
+
+
 def main():
     args = args_parse()
-    input_path = os.path.abspath(args.i)
+    if args.list:
+        show_db_list()
+    else:
+        # threads
+        threads = args.t
+        # print(threads)
 
-    # check if the output directory exists
-    if not os.path.exists(args.o):
-        os.mkdir(args.o)
+        minid = args.minid
+        mincov = args.mincov
 
-    print(args.db)
+        # get the input path
+        input_path = os.path.abspath(args.i)
+
+        # check if the output directory exists
+        if not os.path.exists(args.o):
+            os.mkdir(args.o)
+
+        output_path = os.path.abspath(args.o)
+
+        # get the database path
+        database = args.db
+        database_path = os.path.join(
+            os.path.dirname(__file__), f'db/{args.db}')
+        # print(database_path)
+
+        for file in os.listdir(input_path):
+            file_base = str(os.path.splitext(file)[0])
+            output_filename = file_base + '_tab.txt'
+            outfile = os.path.join(output_path, output_filename)
+            # print(file_base)
+            file_path = os.path.join(input_path, file)
+            if os.path.isfile(file_path):
+                # print("TRUE")
+                if is_fasta(file_path):
+                    df = Blaster(file_path, database_path,
+                                 output_path, threads, minid, mincov).biopython_blast()
+                    print("Finishing process: writing results to " + str(outfile))
+                    df.to_csv(outfile, sep='\t', index=False)
 
 
 if __name__ == '__main__':
     main()
-# db = join('db/resfinder')
-# print(db)
-
-# for file in os.listdir(input):
-#     file_base = os.path.splitext(file)[0]
-#     print(file_base)
-#     file_path = os.path.join(input, file)
-#     print(file_path)
-#     df = Blaster(file_path, db, output, 8, 50, 50).biopython_blast()
-#     print(df)
-
-
-# df = Blaster(my_file, db, output, 8, 50, 50).biopython_blast()
-# df.to_csv(r'test.csv', index=False)
-# print(blast1.is_fasta())

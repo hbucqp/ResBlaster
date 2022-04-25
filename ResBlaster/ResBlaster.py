@@ -14,6 +14,10 @@ def args_parse():
     parser.add_argument("-o", help="<output_directory>: output path")
     parser.add_argument('-db', default='resfinder',
                         help='<database>: resfinder or othersoutfile')
+    parser.add_argument('-minid', default=90,
+                        help="<minimum threshold of identity>")
+    parser.add_argument('-mincov', default=60,
+                        help="<minimum threshold of coverage>")
     parser.add_argument('-list', action='store_true', help='<show database>')
     parser.add_argument('-t', default=8, help='<number of threads>: threads')
     # parser.add_argument("-p", default=True, help="True of False to process something",
@@ -46,10 +50,13 @@ def is_fasta(file):
     """
     chcek if the input file is fasta format
     """
-    with open(file, "r") as handle:
-        fasta = SeqIO.parse(handle, "fasta")
-        # False when `fasta` is empty, i.e. wasn't a FASTA file
-        return any(fasta)
+    try:
+        with open(file, "r") as handle:
+            fasta = SeqIO.parse(handle, "fasta")
+            # False when `fasta` is empty, i.e. wasn't a FASTA file
+            return any(fasta)
+    except:
+        return False
 
 
 def join(f):
@@ -81,6 +88,9 @@ def main():
         threads = args.t
         # print(threads)
 
+        minid = args.minid
+        mincov = args.mincov
+
         # get the input path
         input_path = os.path.abspath(args.i)
 
@@ -106,8 +116,9 @@ def main():
                 # print("TRUE")
                 if is_fasta(file_path):
                     df = Blaster(file_path, database_path,
-                                 output_path, threads).biopython_blast()
-                    df.to_csv(outfile, index=False)
+                                 output_path, threads, minid, mincov).biopython_blast()
+                    print("Finishing process: writing results to " + str(outfile))
+                    df.to_csv(outfile, sep='\t', index=False)
 
 
 if __name__ == '__main__':
