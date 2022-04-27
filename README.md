@@ -40,9 +40,8 @@ ResBlaster -init
 
 
 ```
-usage: ResBlaster -i <genome assemble directory> -db <reference database> -o <output_directory>
+Usage: ResBlaster -i <genome assemble directory> -db <reference database> -o <output_directory> -minid 90 -mincov 60 -t 4
 
-Author: Qingpo Cui(SZQ Lab, China Agricultural University)
 
 optional arguments:
   -h, --help      show this help message and exit
