@@ -2,6 +2,21 @@
 
 ![PYPI](https://img.shields.io/pypi/v/ResBlaster)
 
+![PYPI](https://img.shields.io/pypi/v/cvmblaster)
+
+
+```
+ ____           ____  _           _
+|  _ \ ___  ___| __ )| | __ _ ___| |_ ___ _ __
+| |_) / _ \/ __|  _ \| |/ _` / __| __/ _ \ '__|
+|  _ <  __/\__ \ |_) | | (_| \__ \ ||  __/ |
+|_| \_\___||___/____/|_|\__,_|___/\__\___|_|
+
+```
+
+
+
+
 ## Installation
 pip3 install ResBlaster==0.2.1
 
