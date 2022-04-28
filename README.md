@@ -2,9 +2,6 @@
 
 ![PYPI](https://img.shields.io/pypi/v/ResBlaster)
 
-![PYPI](https://img.shields.io/pypi/v/cvmblaster)
-
-
 ```
  ____           ____  _           _
 |  _ \ ___  ___| __ )| | __ _ ___| |_ ___ _ __
