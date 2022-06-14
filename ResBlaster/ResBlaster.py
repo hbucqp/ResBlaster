@@ -15,13 +15,14 @@ def args_parse():
     parser.add_argument('-db', default='resfinder',
                         help='<database>: resfinder or others')
     parser.add_argument('-minid', default=90,
-                        help="<minimum threshold of identity>")
+                        help="<minimum threshold of identity>, default=90")
     parser.add_argument('-mincov', default=60,
-                        help="<minimum threshold of coverage>")
+                        help="<minimum threshold of coverage>, default=60")
     parser.add_argument('-list', action='store_true', help='<show database>')
     parser.add_argument('-init', action='store_true',
                         help='<initialize the reference database>')
-    parser.add_argument('-t', default=8, help='<number of threads>: threads')
+    parser.add_argument(
+        '-t', default=8, help='<number of threads>: default=8')
     # parser.add_argument("-p", default=True, help="True of False to process something",
     #                     type=lambda x: bool(strtobool(str(x).lower())))
     parser.add_argument('-v', '--version', action='version',
@@ -96,7 +97,7 @@ def main():
     args = args_parse()
     if args.list:
         show_db_list()
-    if args.init:
+    elif args.init:
         initialize_db()
     else:
         # threads
