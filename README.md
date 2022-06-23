@@ -57,15 +57,15 @@ Usage: ResBlaster -i <genome assemble directory> -db <reference database> -o <ou
 
 optional arguments:
   -h, --help      show this help message and exit
-  -i I            <input_path>: genome assembly path
-  -o O            <output_directory>: output path
+  -i I            <input_path>: the PATH to the directory of assembled genome files
+  -o O            <output_directory>: output PATH
   -db DB          <database>: resfinder or others, You colud check database list using -list parameter
   -minid MINID    <minimum threshold of identity>, default=90
   -mincov MINCOV  <minimum threshold of coverage>, default=60
-  -list           <show database>
+  -list           <show database list>
   -init           <initialize the reference database>
   -t T            <number of threads>: default=8
-  -store_arg_seq  save the nucleotide and amino acid sequence of find ARGs on genome
+  -store_arg_seq  save the nucleotide and amino acid sequence of find genes on genome
   -v, --version   Display version
   ```
 
