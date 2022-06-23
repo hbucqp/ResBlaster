@@ -10,21 +10,21 @@ def args_parse():
     "Parse the input argument, use '-h' for help."
     parser = argparse.ArgumentParser(
         usage='ResBlaster -i <genome assemble directory> -db <reference database> -o <output_directory> \n\nAuthor: Qingpo Cui(SZQ Lab, China Agricultural University)\n')
-    parser.add_argument("-i", help="<input_path>: genome assembly path")
-    parser.add_argument("-o", help="<output_directory>: output path")
+    parser.add_argument("-i", help="<input_path>: the PATH to the directory of assembled genome files")
+    parser.add_argument("-o", help="<output_directory>: output PATH")
     parser.add_argument('-db', default='resfinder',
                         help='<database>: resfinder or others, You colud check database list using -list parameter')
     parser.add_argument('-minid', default=90,
                         help="<minimum threshold of identity>, default=90")
     parser.add_argument('-mincov', default=60,
                         help="<minimum threshold of coverage>, default=60")
-    parser.add_argument('-list', action='store_true', help='<show database>')
+    parser.add_argument('-list', action='store_true', help='<show database list>')
     parser.add_argument('-init', action='store_true',
                         help='<initialize the reference database>')
     parser.add_argument(
         '-t', default=8, help='<number of threads>: default=8')
     parser.add_argument("-store_arg_seq", default=False, action="store_true",
-                        help='save the nucleotide and amino acid sequence of find ARGs on genome')
+                        help='save the nucleotide and amino acid sequence of find genes on genome')
     # parser.add_argument("-p", default=True, help="True of False to process something",
     #                     type=lambda x: bool(strtobool(str(x).lower())))
     parser.add_argument('-v', '--version', action='version',
