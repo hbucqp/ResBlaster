@@ -15,13 +15,13 @@
 
 
 ## Installation
-pip3 install ResBlaster==0.2.1
+pip3 install ResBlaster
 
 ## Dependency
 - BLAST+ >2.7.0
-- cvmblaster (v0.2.3)
+- cvmblaster (v0.3.3)
 
-**you should add blast in your PATH**
+**you should add BLAST in your PATH**
 
 
 ## Blast installation
@@ -29,7 +29,7 @@ pip3 install ResBlaster==0.2.1
 
 
 Following this tutorial:
-http://115.28.184.56:22300/shares/rCE8EfUqL5xTn4cdg6rHfE3wxpOQxNNe
+http://123.57.16.241:22300/shares/B7JmO2RqiIR4GEQ5ev0l2h
 
 ### Linux/Mac
 The easyest way to install blast is:
@@ -59,12 +59,13 @@ optional arguments:
   -h, --help      show this help message and exit
   -i I            <input_path>: genome assembly path
   -o O            <output_directory>: output path
-  -db DB          <database>: resfinder or others
+  -db DB          <database>: resfinder or others, You colud check database list using -list parameter
   -minid MINID    <minimum threshold of identity>, default=90
   -mincov MINCOV  <minimum threshold of coverage>, default=60
   -list           <show database>
   -init           <initialize the reference database>
   -t T            <number of threads>: default=8
+  -store_arg_seq  save the nucleotide and amino acid sequence of find ARGs on genome
   -v, --version   Display version
   ```
 
