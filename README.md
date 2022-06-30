@@ -73,7 +73,10 @@ optional arguments:
 **Following database are currently under development and will be available soon:**
 |Database|Description|
 |---|---|
-|vfdb| virulence factor|
+|vfdb_core| The core dataset of vfdb|
+|vfdb_full| The full database of vfdb |
+|ncbi| Bacterial Antimicrobial Resistance Reference Gene Database from NCBI |
+|resfinder | ARGs from ResFinder|
 |ssuis_sero| The serotype database for Streptococcus suis|
 |hps| The serotype database for Haemophilus parasuis|
 ...
