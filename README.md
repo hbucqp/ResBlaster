@@ -19,7 +19,7 @@ pip3 install ResBlaster
 
 ## Dependency
 - BLAST+ >2.7.0
-- cvmblaster (v0.3.3)
+- cvmblaster (v0.3.4)
 
 **you should add BLAST in your PATH**
 
@@ -29,7 +29,7 @@ pip3 install ResBlaster
 
 
 Following this tutorial:
-http://123.57.16.241:22300/shares/B7JmO2RqiIR4GEQ5ev0l2h
+http://82.157.185.121:22300/shares/m6kAuTu5XKacc1GKNELe4B
 
 ### Linux/Mac
 The easyest way to install blast is:
