@@ -29,7 +29,7 @@ pip3 install ResBlaster
 
 
 Following this tutorial:
-http://82.157.185.121:22300/shares/m6kAuTu5XKacc1GKNELe4B
+http://82.157.185.121:22300/shares/BevQrP0j8EXn76p7CwfheA
 
 ### Linux/Mac
 The easyest way to install blast is:
