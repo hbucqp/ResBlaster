@@ -13,7 +13,7 @@ def args_parse():
     parser.add_argument("-i", help="<input_path>: genome assembly path")
     parser.add_argument("-o", help="<output_directory>: output path")
     parser.add_argument('-db', default='resfinder',
-                        help='<database>: resfinder or others, You colud check database list using -list parameter')
+                        help='<database>: resfinder or others')
     parser.add_argument('-minid', default=90,
                         help="<minimum threshold of identity>, default=90")
     parser.add_argument('-mincov', default=60,
@@ -23,8 +23,6 @@ def args_parse():
                         help='<initialize the reference database>')
     parser.add_argument(
         '-t', default=8, help='<number of threads>: default=8')
-    parser.add_argument("-store_arg_seq", default=False, action="store_true",
-                        help='save the nucleotide and amino acid sequence of find ARGs on genome')
     # parser.add_argument("-p", default=True, help="True of False to process something",
     #                     type=lambda x: bool(strtobool(str(x).lower())))
     parser.add_argument('-v', '--version', action='version',
@@ -99,7 +97,7 @@ def main():
     args = args_parse()
     if args.list:
         show_db_list()
-    elif args.init:
+    if args.init:
         initialize_db()
     else:
         # threads
@@ -133,14 +131,10 @@ def main():
             if os.path.isfile(file_path):
                 # print("TRUE")
                 if is_fasta(file_path):
-                    print(f'Processing {file}')
-                    df, result_dict = Blaster(file_path, database_path,
-                                              output_path, threads, minid, mincov).biopython_blast()
-                    print(
-                        f"Finishing process {file}: writing results to " + str(outfile))
+                    df = Blaster(file_path, database_path,
+                                 output_path, threads, minid, mincov).biopython_blast()
+                    print("Finishing process: writing results to " + str(outfile))
                     df.to_csv(outfile, sep='\t', index=False)
-                if args.store_arg_seq:
-                    Blaster.get_arg_seq(file_base, result_dict, output_path)
 
 
 if __name__ == '__main__':
