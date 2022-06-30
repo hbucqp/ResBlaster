@@ -10,7 +10,8 @@ def args_parse():
     "Parse the input argument, use '-h' for help."
     parser = argparse.ArgumentParser(
         usage='ResBlaster -i <genome assemble directory> -db <reference database> -o <output_directory> \n\nAuthor: Qingpo Cui(SZQ Lab, China Agricultural University)\n')
-    parser.add_argument("-i", help="<input_path>: the PATH to the directory of assembled genome files")
+    parser.add_argument(
+        "-i", help="<input_path>: the PATH to the directory of assembled genome files")
     parser.add_argument("-o", help="<output_directory>: output PATH")
     parser.add_argument('-db', default='resfinder',
                         help='<database>: resfinder or others, You colud check database list using -list parameter')
@@ -18,7 +19,8 @@ def args_parse():
                         help="<minimum threshold of identity>, default=90")
     parser.add_argument('-mincov', default=60,
                         help="<minimum threshold of coverage>, default=60")
-    parser.add_argument('-list', action='store_true', help='<show database list>')
+    parser.add_argument('-list', action='store_true',
+                        help='<show database list>')
     parser.add_argument('-init', action='store_true',
                         help='<initialize the reference database>')
     parser.add_argument(
