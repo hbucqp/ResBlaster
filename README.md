@@ -79,5 +79,6 @@ optional arguments:
 |resfinder | ARGs from ResFinder|
 |ssuis_sero| The serotype database for Streptococcus suis|
 |hps| The serotype database for Haemophilus parasuis|
+|lmo| Listeria monocytogenes relevant genes from Pasteur Institute |
 ...
 
