@@ -2,6 +2,7 @@ import os
 import sys
 import argparse
 import subprocess
+import pandas as pd
 from Bio import SeqIO
 from cvmblaster.blaster import Blaster
 
@@ -10,21 +11,23 @@ def args_parse():
     "Parse the input argument, use '-h' for help."
     parser = argparse.ArgumentParser(
         usage='ResBlaster -i <genome assemble directory> -db <reference database> -o <output_directory> \n\nAuthor: Qingpo Cui(SZQ Lab, China Agricultural University)\n')
-    parser.add_argument("-i", help="<input_path>: genome assembly path")
-    parser.add_argument("-o", help="<output_directory>: output path")
+    parser.add_argument(
+        "-i", help="<input_path>: the PATH to the directory of assembled genome files")
+    parser.add_argument("-o", help="<output_directory>: output PATH")
     parser.add_argument('-db', default='resfinder',
                         help='<database>: resfinder or others, You colud check database list using -list parameter')
     parser.add_argument('-minid', default=90,
                         help="<minimum threshold of identity>, default=90")
     parser.add_argument('-mincov', default=60,
                         help="<minimum threshold of coverage>, default=60")
-    parser.add_argument('-list', action='store_true', help='<show database>')
+    parser.add_argument('-list', action='store_true',
+                        help='<show database list>')
     parser.add_argument('-init', action='store_true',
                         help='<initialize the reference database>')
     parser.add_argument(
         '-t', default=8, help='<number of threads>: default=8')
     parser.add_argument("-store_arg_seq", default=False, action="store_true",
-                        help='save the nucleotide and amino acid sequence of find ARGs on genome')
+                        help='save the nucleotide and amino acid sequence of find genes on genome')
     # parser.add_argument("-p", default=True, help="True of False to process something",
     #                     type=lambda x: bool(strtobool(str(x).lower())))
     parser.add_argument('-v', '--version', action='version',
@@ -96,6 +99,7 @@ def initialize_db():
 
 
 def main():
+    df_all = pd.DataFrame()
     args = args_parse()
     if args.list:
         show_db_list()
@@ -139,8 +143,17 @@ def main():
                     print(
                         f"Finishing process {file}: writing results to " + str(outfile))
                     df.to_csv(outfile, sep='\t', index=False)
+                    # change all tab results to pivot table fomat
+                    df_all = pd.concat([df_all, df])
+
                 if args.store_arg_seq:
                     Blaster.get_arg_seq(file_base, result_dict, output_path)
+
+        # output final pivot dataframe to outpu_path
+        summary_file = os.path.join(output_path, 'ResBlaster_summary.csv')
+        df_pivot = df_all.pivot_table(
+            index='FILE', columns=['CLASSES', 'GENE'], values='%IDENTITY')
+        df_pivot.to_csv(summary_file, index=True)
 
 
 if __name__ == '__main__':

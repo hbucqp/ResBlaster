@@ -1,4 +1,0 @@
-Bio
-pandas
-setuptools
-cvmblaster
