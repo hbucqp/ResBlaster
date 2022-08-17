@@ -2,6 +2,7 @@ import os
 import sys
 import argparse
 import subprocess
+import pandas as pd
 from Bio import SeqIO
 from cvmblaster.blaster import Blaster
 
@@ -98,6 +99,7 @@ def initialize_db():
 
 
 def main():
+    df_all = pd.DataFrame()
     args = args_parse()
     if args.list:
         show_db_list()
@@ -141,8 +143,18 @@ def main():
                     print(
                         f"Finishing process {file}: writing results to " + str(outfile))
                     df.to_csv(outfile, sep='\t', index=False)
+                    # change all tab results to pivot table fomat
+                    df_all = pd.concat([df_all, df])
+
                 if args.store_arg_seq:
                     Blaster.get_arg_seq(file_base, result_dict, output_path)
+
+        # output final pivot dataframe to outpu_path
+        summary_file = os.path.join(output_path, 'ResBlaster_summary.csv')
+        df_pivot = df_all.pivot_table(
+            index='FILE', columns=['CLASSES', 'GENE'], values='%IDENTITY',
+            aggfunc=lambda x: ','.join(map(str, x)))
+        df_pivot.to_csv(summary_file, index=True)
 
 
 if __name__ == '__main__':
