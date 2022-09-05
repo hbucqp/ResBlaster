@@ -67,11 +67,11 @@ def is_fasta(file):
         return False
 
 
-def join(f):
-    """
-    Get the path of database file which was located in the scripts dir
-    """
-    return os.path.join(os.path.dirname(__file__), f)
+# def join(f):
+#     """
+#     Get the path of database file which was located in the scripts dir
+#     """
+#     return os.path.join(os.path.dirname(__file__), f)
 
 
 def show_db_list():
