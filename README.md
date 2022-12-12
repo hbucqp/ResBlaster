@@ -42,7 +42,7 @@ conda install -c bioconda blast
 
 ## Usage
 
-### Initialize reference database
+### 1. Initialize reference database
 
 After finish installation, you should first initialize the reference database using following command
 ```
@@ -69,7 +69,37 @@ optional arguments:
   -v, --version   Display version
   ```
 
+### 2. Making your own database
+Let's say you want to make your own database called `owndb`. All you need is a FASTA file of nucleotide sequences, say `owndb.fsa`(**note: the fasta file must end with .fsa**). Ideally the sequence IDs would have the format `>GENE___ID___ACC___CATEGORY` where `GENE` is the name of `GENE`, `ID` is the `allele ID` of `GENE`, `ACC` is an accession number of the sequence source, `CATEGORY` is the `CATEGORY of this GENE belongs to`.
 
+**Your final `owndb.fsa` should like this:**
+
+```
+% head -n 1 owndb.fsa
+>blaOXA-62___1___AY423074___Beta-lactam
+ATGAATACGATAATCTCTCGCCGGTGGCGTGCCGGCCTGTGGCGGCGGCTGGTCGGCGCG
+GTCGTCTTGCCCGCAACGCTCGCCGCCACCCCTGCGGCCTATGCGGCCGACGTGCCGAAA
+GCCGCGTTGGGGCGCATCACCGAGCGCGCCGACTGGGGCAAGCTGTTCGCCGCGGAGGGC
+GTGAAGGGCACGATCGTGGTGCTCGACGCACGCACGCAAACCTATCAGGCCTACGACGCC
+GCACGTGCCGAGAAGCGCATGTCGCCGGCGTCGACCTACAAGATATTCAACAGCCTGCTG
+GCGCTCGACTCCGGGGCGCTGGACAACGAACGCGCGATCATTCCCTGGGATGGCAAGCCG
+CGACGCATCAAGAACTGGAACGCGGCGATGGACCTGAGGACCGCGTTTCGCGTGTCATGC
+CTGCCCTGCTATCAGGTCGTCTCGCACAAGATCGGGCGCCGGTACGCGCAGGCGAAGCTG
+AACGAGGTCGGGTATGGCAACCGCACCATTGGCGGCGCGCCGGACGCCTATTGGGTCGAC
+GACAGTCTGCAGATTTCGGCGCGTGAGCAGGTGGACTTCGTGCAGCGTCTCGCGCGTGGC
+ACGTTGCCGTTCTCTGCGCGCTCGCAGGACATCGTGCGCCAGATGTCGATCGTCGAAGCC
+ACGCCGGACTATGTGCTTCACGGCAAGACGGGTTGGTTCGTCGACAAGAAGCCCGATATC
+GGCTGGTGGGTAGGGTGGATCGAGCGCGACGGCAACATCACCAGCGTCGCGATCAACATC
+GACATGCTGTCGGAGGCGGACGCCCCGAAACGGGCACGCATCGTGAAGGCGGTGCTGAAG
+GACCTGAAGCTGATCTGA
+```
+
+**Run following command will add `owndb.fsa` to blast database**
+```
+% ResBlaster -updatebd owndb.fsa
+```
+
+### 3. Features under development
 **Following database are currently under development and will be available soon:**
 |Database|Description|
 |---|---|
