@@ -75,7 +75,6 @@ Let's say you want to make your own database called `owndb`. All you need is a F
 **Your final `owndb.fsa` should like this:**
 
 ```
-% head -n 1 owndb.fsa
 >blaOXA-62___1___AY423074___Beta-lactam
 ATGAATACGATAATCTCTCGCCGGTGGCGTGCCGGCCTGTGGCGGCGGCTGGTCGGCGCG
 GTCGTCTTGCCCGCAACGCTCGCCGCCACCCCTGCGGCCTATGCGGCCGACGTGCCGAAA
@@ -96,7 +95,7 @@ GACCTGAAGCTGATCTGA
 
 **Run following command will add `owndb.fsa` to blast database**
 ```
-% ResBlaster -updatebd owndb.fsa
+% ResBlaster -updatedb owndb.fsa
 ```
 
 ### 3. Features under development
