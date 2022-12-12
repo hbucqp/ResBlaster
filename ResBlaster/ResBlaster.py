@@ -2,6 +2,7 @@ import os
 import sys
 import argparse
 import subprocess
+import shutil
 import pandas as pd
 from Bio import SeqIO
 from cvmblaster.blaster import Blaster
@@ -22,16 +23,18 @@ def args_parse():
                         help="<minimum threshold of coverage>, default=60")
     parser.add_argument('-list', action='store_true',
                         help='<show database list>')
-    parser.add_argument('-init', action='store_true',
-                        help='<initialize the reference database>')
     parser.add_argument(
         '-t', default=8, help='<number of threads>: default=8')
     parser.add_argument("-store_arg_seq", default=False, action="store_true",
-                        help='save the nucleotide and amino acid sequence of find genes on genome')
+                        help='<save the nucleotide and amino acid sequence of find genes on genome>')
     # parser.add_argument("-p", default=True, help="True of False to process something",
     #                     type=lambda x: bool(strtobool(str(x).lower())))
     parser.add_argument('-v', '--version', action='version',
-                        version='Version: ' + get_version("__init__.py"), help='Display version')
+                        version='Version: ' + get_version("__init__.py"), help='<display version>')
+    group = parser.add_mutually_exclusive_group(required=False)
+    group.add_argument('-updatedb', help="<add input fasta to BLAST database>")
+    group.add_argument('-init', action='store_true',
+                        help='<initialize the reference database>')
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
@@ -97,6 +100,25 @@ def initialize_db():
             out_path = os.path.join(database_path, file_base)
             Blaster.makeblastdb(file_path, out_path)
 
+def update_db(fasta_file):
+    database_path = os.path.join(
+        os.path.dirname(__file__), f'db')
+    fpath, fname = os.path.split(fasta_file)
+    fbase, fsuffix = os.path.splitext(fname)
+    if fsuffix == '.fsa':
+        if fname not in os.listdir(database_path):
+            dest_file = os.path.join(database_path, fname)
+            shutil.copy(fasta_file, dest_file)
+            blastdb_out = os.path.join(database_path, os.path.splitext(fname)[0])
+            print(f"Add {fname} to database...")
+            Blaster.makeblastdb(dest_file,  blastdb_out)
+        else:
+            print(f"{fname} already exist in database, Please make sure or rename your .fsa file")
+            sys.exit(1)
+    else:
+        print("Wrong suffix with input fasta file")
+        sys.exit(1)
+
 
 def main():
     df_all = pd.DataFrame()
@@ -105,6 +127,10 @@ def main():
         show_db_list()
     elif args.init:
         initialize_db()
+    elif args.updatedb:
+        newdbfile = os.path.abspath(args.updatedb)
+        if is_fasta(newdbfile):
+            update_db(newdbfile)
     else:
         # threads
         threads = args.t
