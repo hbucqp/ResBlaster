@@ -34,7 +34,7 @@ def args_parse():
     group = parser.add_mutually_exclusive_group(required=False)
     group.add_argument('-updatedb', help="<add input fasta to BLAST database>")
     group.add_argument('-init', action='store_true',
-                        help='<initialize the reference database>')
+                       help='<initialize the reference database>')
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
@@ -100,6 +100,7 @@ def initialize_db():
             out_path = os.path.join(database_path, file_base)
             Blaster.makeblastdb(file_path, out_path)
 
+
 def update_db(fasta_file):
     database_path = os.path.join(
         os.path.dirname(__file__), f'db')
@@ -109,15 +110,31 @@ def update_db(fasta_file):
         if fname not in os.listdir(database_path):
             dest_file = os.path.join(database_path, fname)
             shutil.copy(fasta_file, dest_file)
-            blastdb_out = os.path.join(database_path, os.path.splitext(fname)[0])
+            blastdb_out = os.path.join(
+                database_path, os.path.splitext(fname)[0])
             print(f"Add {fname} to database...")
             Blaster.makeblastdb(dest_file,  blastdb_out)
         else:
-            print(f"{fname} already exist in database, Please make sure or rename your .fsa file")
+            print(
+                f"{fname} already exist in database, Please make sure or rename your .fsa file")
             sys.exit(1)
     else:
         print("Wrong suffix with input fasta file")
         sys.exit(1)
+
+
+def check_db():
+    """
+    ruturn database list
+    """
+    db_list = []
+    database_path = os.path.join(
+        os.path.dirname(__file__), f'db')
+    for file in os.listdir(database_path):
+        if file.endswith('.fsa'):
+            db_name = os.path.splitext(file)[0]
+            db_list.append(db_name)
+    return db_list
 
 
 def main():
@@ -150,8 +167,18 @@ def main():
 
         # get the database path
         database = args.db
-        database_path = os.path.join(
-            os.path.dirname(__file__), f'db/{args.db}')
+
+        # check if input db is in dblist
+        exist_database = check_db()
+        # print(exist_database)
+        if database in exist_database:
+            database_path = os.path.join(
+                os.path.dirname(__file__), f'db/{args.db}')
+        else:
+            print(
+                f'Could not found {database} in {exist_database}, Please check your input or view database list using "ResBlaster -list"')
+            sys.exit(1)
+
         # print(database_path)
 
         for file in os.listdir(input_path):
