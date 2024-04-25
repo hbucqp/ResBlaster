@@ -1,4 +1,4 @@
-Bio==1.4.0
-cvmblaster==0.3.8
-pandas==1.4.0
-setuptools==58.1.0
+Bio==1.5.2
+cvmblaster==0.4.1
+pandas==1.4.2
+setuptools==61.2.0
