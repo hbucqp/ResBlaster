@@ -1,6 +1,7 @@
 # ResBlaster
 
 ![PYPI](https://img.shields.io/pypi/v/ResBlaster)
+![Static Badge](https://img.shields.io/badge/OS-_Windows_%7C_Mac_%7C_Linux-steelblue)
 
 ```
  ____           ____  _           _
