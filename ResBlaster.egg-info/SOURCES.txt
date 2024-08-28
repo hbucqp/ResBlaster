@@ -14,6 +14,7 @@ ResBlaster.egg-info/requires.txt
 ResBlaster.egg-info/top_level.txt
 ResBlaster/__pycache__/blaster.cpython-39.pyc
 ResBlaster/db/.DS_Store
+ResBlaster/db/ESBL.fsa
 ResBlaster/db/lmo.fsa
 ResBlaster/db/ncbi.fsa
 ResBlaster/db/resfinder.fsa

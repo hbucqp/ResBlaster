@@ -3,15 +3,35 @@ import sys
 import argparse
 import subprocess
 import shutil
+import time
+from tabulate import tabulate
 import pandas as pd
 from Bio import SeqIO
 from cvmblaster.blaster import Blaster
+from cvmcore.cvmcore import cfunc
 
 
 def args_parse():
     "Parse the input argument, use '-h' for help."
     parser = argparse.ArgumentParser(
         usage='ResBlaster -i <genome assemble directory> -db <reference database> -o <output_directory> \n\nAuthor: Qingpo Cui(SZQ Lab, China Agricultural University)\n')
+
+    # Add subcommand
+    subparsers = parser.add_subparsers(
+        dest='subcommand', title='ResBlaster subcommand')
+    show_database_parser = subparsers.add_parser(
+        'show_db', help="<show the list of all available database>")
+
+    init_db_parser = subparsers.add_parser(
+        'init', help='<initialize the reference database>')
+
+    add_db_parser = subparsers.add_parser(
+        'updatedb', help='<add custome database, use ResBlaster updatedb -h for help>')
+
+    add_db_parser.add_argument(
+        '-file', help='<The fasta format reference file>')
+
+    # Add options
     parser.add_argument(
         "-i", help="<input_path>: the PATH to the directory of assembled genome files")
     parser.add_argument("-o", help="<output_directory>: output PATH")
@@ -21,8 +41,8 @@ def args_parse():
                         help="<minimum threshold of identity>, default=90")
     parser.add_argument('-mincov', default=60,
                         help="<minimum threshold of coverage>, default=60")
-    parser.add_argument('-list', action='store_true',
-                        help='<show database list>')
+    # parser.add_argument('-list', action='store_true',
+    #                     help='<show database list>')
     parser.add_argument(
         '-t', default=8, help='<number of threads>: default=8')
     parser.add_argument("-store_arg_seq", default=False, action="store_true",
@@ -49,6 +69,14 @@ def read(rel_path: str) -> str:
         return fp.read()
 
 
+# def get_rel_path():
+#     """
+#     Get the relative path
+#     """
+#     here = os.path.abspath(os.path.dirname(__file__))
+#     return here
+
+
 def get_version(rel_path: str) -> str:
     for line in read(rel_path).splitlines():
         if line.startswith("__version__"):
@@ -57,37 +85,47 @@ def get_version(rel_path: str) -> str:
     raise RuntimeError("Unable to find version string.")
 
 
-def is_fasta(file):
+def get_rel_path():
     """
-    chcek if the input file is fasta format
+    Get the relative path
     """
-    try:
-        with open(file, "r") as handle:
-            fasta = SeqIO.parse(handle, "fasta")
-            # False when `fasta` is empty, i.e. wasn't a FASTA file
-            return any(fasta)
-    except:
-        return False
-
-
-# def join(f):
-#     """
-#     Get the path of database file which was located in the scripts dir
-#     """
-#     return os.path.join(os.path.dirname(__file__), f)
+    here = os.path.abspath(os.path.dirname(__file__))
+    return here
 
 
 def show_db_list():
-    print('Datbase' + '\t' + 'Num_of_Sequence')
-    db_path = os.path.join(os.path.dirname(__file__), 'db')
+    """
+    Convert the ResBlaster database to tidy dataframe
+    Paramters
+    ----------
+
+    Returns
+    ----------
+    A tidy dataframe contains the blast database name and No. of seqs in database and the last modified date
+
+    """
+    here = get_rel_path()
+    db_path = os.path.join(here, 'db')
+    db_list = []
     for file in os.listdir(db_path):
         file_path = os.path.join(db_path, file)
         if file_path.endswith('.fsa'):
+            db_dict = {}
             fasta_file = os.path.basename(file_path)
             file_base = os.path.splitext(fasta_file)[0]
             num_seqs = len(
                 [1 for line in open(file_path) if line.startswith(">")])
-            print(file_base + '\t' + str(num_seqs))
+            update_date = cfunc.get_mod_time(file_path)
+            db_dict['DB_name'] = file_base
+            db_dict['No. of seqs'] = num_seqs
+            db_dict['Update_date'] = update_date
+            db_list.append(db_dict)
+        else:
+            next
+
+    db_df = pd.DataFrame(db_list)
+    tidy_db_df = tabulate(db_df, headers='keys')
+    return print(tidy_db_df)
 
 
 def initialize_db():
@@ -140,15 +178,16 @@ def check_db():
 def main():
     df_all = pd.DataFrame()
     args = args_parse()
-    if args.list:
-        show_db_list()
-    elif args.init:
-        initialize_db()
-    elif args.updatedb:
-        newdbfile = os.path.abspath(args.updatedb)
-        if is_fasta(newdbfile):
-            update_db(newdbfile)
-    else:
+    if args.subcommand is None:
+        # if args.list:
+        #     show_db_list()
+        # elif args.init:
+        #     initialize_db()
+        # elif args.updatedb:
+        #     newdbfile = os.path.abspath(args.updatedb)
+        #     if is_fasta(newdbfile):
+        #         update_db(newdbfile)
+        # else:
         # threads
         threads = args.t
         # print(threads)
@@ -189,7 +228,7 @@ def main():
             file_path = os.path.join(input_path, file)
             if os.path.isfile(file_path):
                 # print("TRUE")
-                if is_fasta(file_path):
+                if cfunc.is_fasta(file_path):
                     print(f'Processing {file}')
                     df, result_dict = Blaster(file_path, database_path,
                                               output_path, threads, minid, mincov).biopython_blast()
@@ -208,6 +247,19 @@ def main():
             index='FILE', columns=['CLASSES', 'GENE'], values='%IDENTITY',
             aggfunc=lambda x: ','.join(map(str, x)))
         df_pivot.to_csv(summary_file, index=True)
+    elif(args.subcommand == 'show_db'):
+        show_db_list()
+    elif(args.subcommand == 'init'):
+        initialize_db()
+    elif(args.subcommand == 'updatedb'):
+        custome_db_file = os.path.abspath(args.file)
+        update_db(custome_db_file)
+        print(f'Adding {args.file} to reference database...')
+        print(f'Initializing reference data...')
+        initialize_db()
+    else:
+        print(
+            f'{args.subcommand} do not exists, please using "ResBlaster -h" to show help massage.')
 
 
 if __name__ == '__main__':
