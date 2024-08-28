@@ -67,11 +67,11 @@ def is_fasta(file):
         return False
 
 
-def join(f):
-    """
-    Get the path of database file which was located in the scripts dir
-    """
-    return os.path.join(os.path.dirname(__file__), f)
+# def join(f):
+#     """
+#     Get the path of database file which was located in the scripts dir
+#     """
+#     return os.path.join(os.path.dirname(__file__), f)
 
 
 def show_db_list():
@@ -152,7 +152,8 @@ def main():
         # output final pivot dataframe to outpu_path
         summary_file = os.path.join(output_path, 'ResBlaster_summary.csv')
         df_pivot = df_all.pivot_table(
-            index='FILE', columns=['CLASSES', 'GENE'], values='%IDENTITY')
+            index='FILE', columns=['CLASSES', 'GENE'], values='%IDENTITY',
+            aggfunc=lambda x: ','.join(map(str, x)))
         df_pivot.to_csv(summary_file, index=True)
 
 
