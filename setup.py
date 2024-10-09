@@ -18,7 +18,7 @@ except ImportError:
 
 
 requirements = [
-    'Bio', 'pandas', 'setuptools', 'cvmblaster'
+    'Bio', 'pandas', 'setuptools', 'cvmblaster', 'cvmcore', 'tabulate', 'dask'
 ]
 
 
@@ -61,6 +61,8 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
     ],
     entry_points={
         'console_scripts': [
