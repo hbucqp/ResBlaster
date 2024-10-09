@@ -4,11 +4,15 @@ import argparse
 import subprocess
 import shutil
 import time
+# import warnings
 from tabulate import tabulate
 import pandas as pd
 from Bio import SeqIO
 from cvmblaster.blaster import Blaster
 from cvmcore.cvmcore import cfunc
+from Bio import BiopythonDeprecationWarning
+
+# warnings.simplefilter('ignore', BiopythonDeprecationWarning)
 
 
 def args_parse():
@@ -51,10 +55,7 @@ def args_parse():
     #                     type=lambda x: bool(strtobool(str(x).lower())))
     parser.add_argument('-v', '--version', action='version',
                         version='Version: ' + get_version("__init__.py"), help='<display version>')
-    group = parser.add_mutually_exclusive_group(required=False)
-    group.add_argument('-updatedb', help="<add input fasta to BLAST database>")
-    group.add_argument('-init', action='store_true',
-                       help='<initialize the reference database>')
+
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
@@ -124,7 +125,8 @@ def show_db_list():
             next
 
     db_df = pd.DataFrame(db_list)
-    tidy_db_df = tabulate(db_df, headers='keys')
+    db_df = db_df.sort_values(by='DB_name', ascending=True)
+    tidy_db_df = tabulate(db_df, headers='keys', showindex=False)
     return print(tidy_db_df)
 
 
@@ -136,7 +138,13 @@ def initialize_db():
             file_path = os.path.join(database_path, file)
             file_base = os.path.splitext(file)[0]
             out_path = os.path.join(database_path, file_base)
-            Blaster.makeblastdb(file_path, out_path)
+            seq_type = cfunc.check_sequence_type(file_path)
+            if seq_type == 'DNA':
+                Blaster.makeblastdb(file_path, out_path)
+            elif seq_type == 'Amino Acid':
+                Blaster.makeblastdb(file_path, out_path, 'prot')
+            else:
+                print('Unknown sequence type, exit ...')
 
 
 def update_db(fasta_file):
@@ -213,12 +221,20 @@ def main():
         if database in exist_database:
             database_path = os.path.join(
                 os.path.dirname(__file__), f'db/{args.db}')
+            seq_type = cfunc.check_sequence_type(f'{database_path}.fsa')
         else:
             print(
                 f'Could not found {database} in {exist_database}, Please check your input or view database list using "ResBlaster -list"')
             sys.exit(1)
 
-        # print(database_path)
+        # decide blast type
+        # print(f'The database type is {seq_type} \n')
+        if seq_type == 'Amino Acid':
+            blast_type = 'blastx'
+        else:
+            blast_type = 'blastn'
+
+        # print(f'The blast type is {blast_type}')
 
         for file in os.listdir(input_path):
             file_base = str(os.path.splitext(file)[0])
@@ -231,7 +247,7 @@ def main():
                 if cfunc.is_fasta(file_path):
                     print(f'Processing {file}')
                     df, result_dict = Blaster(file_path, database_path,
-                                              output_path, threads, minid, mincov).biopython_blast()
+                                              output_path, threads, minid, mincov, blast_type).biopython_blast()
                     print(
                         f"Finishing process {file}: writing results to " + str(outfile))
                     df.to_csv(outfile, sep='\t', index=False)
