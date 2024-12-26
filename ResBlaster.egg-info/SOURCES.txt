@@ -1,4 +1,3 @@
-.DS_Store
 MANIFEST.in
 README.md
 requirements.txt
@@ -15,6 +14,9 @@ ResBlaster.egg-info/top_level.txt
 ResBlaster/__pycache__/blaster.cpython-39.pyc
 ResBlaster/db/.DS_Store
 ResBlaster/db/ESBL.fsa
+ResBlaster/db/bacmet1.fsa
+ResBlaster/db/bacmet2_exp.fsa
+ResBlaster/db/bacmet2_pred.fsa
 ResBlaster/db/lmo.fsa
 ResBlaster/db/ncbi.fsa
 ResBlaster/db/resfinder.fsa

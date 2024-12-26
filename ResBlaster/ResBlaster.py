@@ -10,7 +10,7 @@ import pandas as pd
 from Bio import SeqIO
 from cvmblaster.blaster import Blaster
 from cvmcore.cvmcore import cfunc
-from Bio import BiopythonDeprecationWarning
+# from Bio import BiopythonDeprecationWarning
 
 # warnings.simplefilter('ignore', BiopythonDeprecationWarning)
 
@@ -140,9 +140,9 @@ def initialize_db():
             out_path = os.path.join(database_path, file_base)
             seq_type = cfunc.check_sequence_type(file_path)
             if seq_type == 'DNA':
-                Blaster.makeblastdb(file_path, out_path)
+                Blaster.makeblastdb(file_path, out_path, db_type='nucl')
             elif seq_type == 'Amino Acid':
-                Blaster.makeblastdb(file_path, out_path, 'prot')
+                Blaster.makeblastdb(file_path, out_path, db_type='prot')
             else:
                 print('Unknown sequence type, exit ...')
 
@@ -259,10 +259,33 @@ def main():
 
         # output final pivot dataframe to outpu_path
         summary_file = os.path.join(output_path, 'ResBlaster_summary.csv')
-        df_pivot = df_all.pivot_table(
-            index='FILE', columns=['CLASSES', 'GENE'], values='%IDENTITY',
-            aggfunc=lambda x: ','.join(map(str, x)))
-        df_pivot.to_csv(summary_file, index=True)
+
+        # add empty df_all in order to avoid KeyError
+        if df_all.empty:
+            col_dict = {'FILE': '',
+                        'SEQUENCE': '',
+                        'GENE': '',
+                        'START': '',
+                        'END': '',
+                        'SBJSTART': '',
+                        'SBJEND': '',
+                        'STRAND': '',
+                        'GAPS': '',
+                        "%COVERAGE": '',
+                        "%IDENTITY": '',
+                        'ACCESSION': '',
+                        'CLASSES': ''}
+
+            df_all = pd.DataFrame().from_dict(col_dict, orient='index').T
+            # write a empty summary_file
+            with open(summary_file, 'w') as csv_output:
+                csv_output.write('')
+            csv_output.close()
+        else:
+            df_pivot = df_all.pivot_table(
+                index='FILE', columns=['CLASSES', 'GENE'], values='%IDENTITY',
+                aggfunc=lambda x: ','.join(map(str, x)))
+            df_pivot.to_csv(summary_file, index=True)
     elif(args.subcommand == 'show_db'):
         show_db_list()
     elif(args.subcommand == 'init'):

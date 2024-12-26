@@ -1,6 +1,6 @@
 Bio==1.7.1
-cvmblaster==0.4.3
-cvmcore==0.1.7
+cvmblaster==0.4.4
+cvmcore==0.1.9
 pandas==1.4.0
 setuptools==58.1.0
 tabulate==0.9.0
