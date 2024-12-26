@@ -63,7 +63,6 @@ optional arguments:
   -store_arg_seq        <save the nucleotide and amino acid sequence of find genes on genome>
   -v, --version         <display version>
   -updatedb UPDATEDB    <add input fasta to BLAST database>
-  -init                 <initialize the reference database>
 
 ResBlaster subcommand:
   {show_db,init,updatedb}
