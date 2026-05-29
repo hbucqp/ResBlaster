@@ -1,0 +1,28 @@
+[project]
+name = "resblaster"
+version = "1.0.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "biopython>=1.87",
+    "cvmblaster>=0.6.1",
+    "cvmcore>=0.2.2",
+    "pandas>=2.3.3",
+    "tabulate>=0.10.0",
+]
+
+[[tool.uv.index]]
+url = "https://mirrors.aliyun.com/pypi/simple"
+default = true
+
+[build-system]
+requires = ["hatchling>=1.20"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+resblaster = "ResBlaster.ResBlaster:main"
+ResBlaster = "ResBlaster.ResBlaster:main"
+
+[project.urls]
+Homepage = "https://github.com/hbucqp/ResBlaster"

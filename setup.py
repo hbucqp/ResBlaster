@@ -22,7 +22,7 @@ requirements = [
     'pandas',
     'setuptools',
     'cvmblaster >= 0.4.5',
-    'cvmcore',
+    'cvmcore >=0.2.0',
     'tabulate',
     'dask'
 ]
